@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions 
+    xmlns:mime     ="http://schemas.xmlsoap.org/wsdl/mime/" 
+	xmlns:http     ="http://schemas.xmlsoap.org/wsdl/http/" 
+	xmlns:soapenc  ="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:soap     ="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:siriWS   ="http://new.webservice.namespace" 
+	xmlns:siri     ="http://www.siri.org.uk/siri" 
+	xmlns:xsd      ="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://new.webservice.namespace" 
+	xmlns          ="http://schemas.xmlsoap.org/wsdl/"
+	>
+	<types>
+		<xsd:schema targetNamespace="http://new.webservice.namespace">
+			<xsd:import schemaLocation="siri_stopMonitoring_service.xsd" namespace="http://www.siri.org.uk/siri" />
+		</xsd:schema>
+	</types>
+	<message  name="StopMonitoringServiceRequest">
+		<part name="Request" type="siri:ServiceRequestStructure"/>
+	</message>
+	<message  name="StopMonitoringServiceDelivery">
+		<part name="Answer"  type="siri:ServiceDeliveryStructure"/>
+	</message>
+	<portType name="SOAP-Port">
+		<operation name="GetStopMonitoringService">
+			<input  message="siriWS:StopMonitoringServiceRequest"/>
+			<output message="siriWS:StopMonitoringServiceDelivery"/>
+		</operation>
+	</portType>
+	<binding name="SiriSOAPBinding" type="siriWS:SOAP-Port">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+		<operation name="GetStopMonitoringService">
+			<soap:operation soapAction="GetStopMonitoringService"/>
+			<input>
+				<soap:body use="literal" namespace="http://new.webservice.namespace"/>
+			</input>
+			<output>
+				<soap:body use="literal" namespace="http://new.webservice.namespace"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="SiriServices">
+		<port name="SiriWSPort" binding="siriWS:SiriSOAPBinding">
+			<soap:address location="http://siri.motrealtime.co.il:8081/Siri/SiriServices"/>
+		</port>
+	</service>
+</definitions>

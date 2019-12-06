@@ -1,0 +1,6 @@
+Base on Siri_XML-v1.4
+
+Removed duplication of HalfOpenTimeRangeStructure at iflot-time-v0.2
+Removed duplication of FeatureRefStructure at ifopt_location-x0.3
+Changed name of MonitoredVehicleJourneyStructure to MonitoredVehicleJourneyStructure at siri_journey-v1.3
+Changed name of MonitoredCallStructure to MonitoredCallStructure_dup at siri_journey-v1.3
