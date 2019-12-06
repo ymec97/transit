@@ -1,2 +1,5 @@
 *.sublime-*
 Output/
+
+# AWS key files for secure connections
+*.pem
