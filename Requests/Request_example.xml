@@ -8,17 +8,9 @@
 				<siri:MessageIdentifier>AC:20170425:230410:981</siri:MessageIdentifier>
 				<siri:StopMonitoringRequest version="2.7">
 					<siri:RequestTimestamp>2017-05-08T11:18:45.237+03:00</siri:RequestTimestamp>
-					<siri:MessageIdentifier>0</siri:MessageIdentifier>
-					<siri:PreviewInterval>PT30M</siri:PreviewInterval>
-					<siri:StartTime>2017-05-08T11:18:45.237+03:00</siri:StartTime>
-					<siri:MonitoringRef>32902</siri:MonitoringRef>
-					<siri:MaximumStopVisits>100</siri:MaximumStopVisits>
-				</siri:StopMonitoringRequest>
-				<siri:StopMonitoringRequest version="2.7">
-					<siri:RequestTimestamp>2017-05-08T11:18:45.237+03:00</siri:RequestTimestamp>
 					<siri:MessageIdentifier>1</siri:MessageIdentifier>
 					<siri:PreviewInterval>PT30M</siri:PreviewInterval>
-					<siri:StartTime>2017-05-08T11:18:45.237+03:00</siri:StartTime>
+					<siri:StartTime>2019-12-08T11:18:45.237+03:00</siri:StartTime>
 					<siri:MonitoringRef>32901</siri:MonitoringRef>
 					<siri:MaximumStopVisits>100</siri:MaximumStopVisits>
 				</siri:StopMonitoringRequest>
