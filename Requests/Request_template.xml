@@ -12,6 +12,7 @@
 					<siri:PreviewInterval>PT30M</siri:PreviewInterval>
 					<siri:StartTime>2019-12-08T11:18:45.237+03:00</siri:StartTime>
 					<siri:MonitoringRef>32901</siri:MonitoringRef>
+					<siri:LineRef>156</siri:LineRef>
 					<siri:MaximumStopVisits>100</siri:MaximumStopVisits>
 				</siri:StopMonitoringRequest>
 			</Request>	

@@ -1,4 +1,5 @@
 # Ignore everything in this directory
 *
-# Except for this file
+# Except for these files
 !.gitignore
+!Request_template.xml

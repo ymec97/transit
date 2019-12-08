@@ -13,7 +13,7 @@ LINE_CODE_ARG = 2
 MAX_ARGS_NUM = 3
 DEFAULT_REPLY_DEST = "Output/"
 REQUESTS_PATH = "Requests/"
-DEFAULT_REQUEST_FILE = REQUESTS_PATH + "Request_example.xml" # Path to the template file for requests
+DEFAULT_REQUEST_FILE = REQUESTS_PATH + "Request_template.xml" # Path to the template file for requests
 NEW_REQUEST_FILE_FORMAT = "{}-{}.xml"
 
 def _CreateNewRequest(dom, stop_code, line_code):
