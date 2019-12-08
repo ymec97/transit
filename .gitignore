@@ -1,6 +1,7 @@
 *.sublime-*
 *.pyc
 Output/
+Requests/ # Runtime created requests
 
 # AWS key files for secure connections
 *.pem
