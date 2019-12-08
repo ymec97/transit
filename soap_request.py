@@ -12,16 +12,39 @@ STOP_CODE_ARG = 1
 LINE_CODE_ARG = 2
 MAX_ARGS_NUM = 3
 DEFAULT_REPLY_DEST = "Output/"
-DEFAULT_REQUEST_FILE = "Requests/Request_example.xml" # Path to the template file for requests
+REQUESTS_PATH = "Requests/"
+DEFAULT_REQUEST_FILE = REQUESTS_PATH + "Request_example.xml" # Path to the template file for requests
 NEW_REQUEST_FILE_FORMAT = "{}-{}.xml"
 
-def _UpdateRequest(stop_code, line_code):
+def _CreateNewRequest(dom, stop_code, line_code):
 	"""
-	Update the default request file with the given parameters
+	load default request file to memory and create a new request file with the new values
+	Return the path to the new request file
 	"""
-	DOMTree = xml.dom.minidom.parse(DEFAULT_REQUEST_FILE)
-	collection = DOMTree.documentElement
-	print(collection)
+	new_request_file = "{}{}-{}.xml".format(REQUESTS_PATH, str(line_code), str(stop_code))
+	try:
+
+		phase_code = 0
+		collection = dom.documentElement
+		
+		phase_code = 1
+		request = collection.getElementsByTagName("siri:MonitoringRef")[0]
+		request_node = request.childNodes[0]
+
+		phase_code = 2
+		if request_node.nodeType == request_node.TEXT_NODE:
+			# We reached the actual value to change
+			request_node.replaceWholeText(stop_code)
+
+		with open(new_request_file, "w") as request_file:
+			dom.writexml(request_file)
+
+	except Exception as error_msg:
+		print("Failed parsing ", error_msg)
+
+	# Return the new request file
+	return new_request_file
+
 
 def ParseOutput(source_file, format=None):
 	"""
@@ -32,14 +55,13 @@ def ParseOutput(source_file, format=None):
 
 def SendRequest(stop_code, line_code):
 	output_file = "{}{}-{}.xml".format(DEFAULT_REPLY_DEST, str(line_code), str(stop_code))
-	print("this is the output {}".format(output_file))
-
-	_UpdateRequest(stop_code, line_code)
-	return 12
-
+	
+	DOMTree = xml.dom.minidom.parse(DEFAULT_REQUEST_FILE)
+	new_request = _CreateNewRequest(DOMTree, stop_code, line_code)
+	
 	headers = {'content-type': 'text/xml'}
-	with open("Request_example.xml") as f:
-		body = f.read()
+	with open(new_request) as request:
+		body = request.read()
 
 	response = requests.post(SIRI_URL,data=body,headers=headers)
 	with open(output_file, "w") as file:
