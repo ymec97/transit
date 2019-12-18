@@ -7,6 +7,8 @@ from xml.dom.minidom import parse
 from xml.dom.minidom import Document as XMLDoc
 import xml.dom.minidom
 
+from datetime import datetime
+
 # This consts should be moved (and will be moved) to a better location in the future 
 SIRI_URL="http://siri.motrealtime.co.il:8081/Siri/SiriServices"
 STOP_CODE_ARG = 1
@@ -39,6 +41,18 @@ def _UpdateField(dom: XMLDoc, field: str, value: str) -> bool:
 		return False
 	
 	return True
+
+def _GetCurrentTimeFormat() -> str:
+	"""
+	Get the current time according to MOT (siri-sm) defined format
+	Note: No support for DST
+	
+	Returns:
+	    str: current datetime (format: yyyy-mm-ddThh:mm:ss.ms) 
+	"""
+	# MOT protocol works with gmt time
+	gmt_zone="+02:00"
+	return datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f{timezone}".format(timezone=gmt_zone))
 
 def _CreateNewRequest(dom, stop_code, line_code):
 	"""
