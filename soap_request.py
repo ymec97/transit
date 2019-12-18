@@ -10,7 +10,7 @@ from xml.dom.minidom import parseString
 from xml.dom.minidom import Document as XMLDoc
 import xml.dom.minidom
 
-from datetime import datetime
+import datetime
 
 def _UpdateField(dom: XMLDoc, field: str, value: str) -> bool:
 	"""
@@ -43,10 +43,10 @@ def _GetCurrentTimeFormat() -> str:
 	    str: current datetime (format: yyyy-mm-ddThh:mm:ss.ms) 
 	"""
 	# MOT protocol works with gmt time
-	gmt_zone="+02:00"
-	return datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f{timezone}".format(timezone=gmt_zone))
 
-def _CreateNewRequest(dom, stop_code, line_code):
+	return datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f+{timezone}".format(timezone=constants.DEFAULT_GMT_STRING))
+
+def _CreateNewRequest(dom, stop_code, line_code, start_date_time):
 	"""
 	load default request file to memory and create a new request file with the new values
 	Return the path to the new request file
@@ -64,6 +64,10 @@ def _CreateNewRequest(dom, stop_code, line_code):
 	if not _UpdateField(dom, constants.LINE_FIELD_STRING, line_code):
 		print("Failed updating field [{field}] with value: [{value}]".format(field=constants.LINE_FIELD_STRING, value=line_code))
 		return None
+	if not _UpdateField(dom, constants.START_TIME_FIELD_STRING, start_date_time):
+		print("Failed updating field [{field}] with value: [{value}]".format(field=constants.START_TIME_FIELD_STRING, value=start_date_time))
+		return None
+
 
 	with open(new_request_file, "w") as request_file:
 		dom.writexml(request_file)
@@ -73,6 +77,20 @@ def _CreateNewRequest(dom, stop_code, line_code):
 	return new_request_file
 
 
+def _GetDefaultRequestTime() -> datetime.datetime:
+	"""
+	Get the date of tomorrow with the default time
+	
+	Returns:
+	    datetime.datetime
+	"""
+
+	request_date = datetime.date.today() + datetime.timedelta(days=1)
+	new_datetime = datetime.datetime.combine(request_date, datetime.time(*constants.DEFAULT_REQUEST_TIME))
+
+	return new_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f+{timezone}".format(timezone=constants.DEFAULT_GMT_STRING))
+	
+
 def ParseOutput(source_file, format=None):
 	"""
 	Parse the output file according to the requested format
@@ -80,11 +98,11 @@ def ParseOutput(source_file, format=None):
 	"""
 	pass
 
-def SendRequest(stop_code, line_code):
+def SendRequest(stop_code, line_code, start_date_time):
 	output_file = "{}{}-{}.xml".format(constants.DEFAULT_REPLY_DEST, str(line_code), str(stop_code))
 	
 	parsed_xml = parse(constants.DEFAULT_REQUEST_FILE)
-	new_request = _CreateNewRequest(parsed_xml, stop_code, line_code)
+	new_request = _CreateNewRequest(parsed_xml, stop_code, line_code, start_date_time)
 	
 	headers = {'content-type': 'text/xml'}
 	with open(new_request) as request:
@@ -97,6 +115,8 @@ def SendRequest(stop_code, line_code):
 	with open(output_file, "w") as file:
 		file.write(parsed_xml.toprettyxml())
 
+
+
 def main(argv, argc):
 	if (argc < constants.MAX_ARGS_NUM):
 		print("Error not enough arguments")
@@ -105,9 +125,12 @@ def main(argv, argc):
 	stop_code = argv[constants.STOP_CODE_ARG]
 	line_code = argv[constants.LINE_CODE_ARG]
 
-	print("Showing information for:\nLine: {0}, Stop: {1}".format(line_code, stop_code))
+	# In the future should be accepted from the user
+	start_date_time = _GetDefaultRequestTime()
+	
+	print("Showing information for:\nLine: {0}, Stop: {1}, Date: {2}".format(line_code, stop_code, start_date_time))
 
-	ParseOutput(SendRequest(stop_code, line_code))
+	ParseOutput(SendRequest(stop_code, line_code, start_date_time))
 
 	return 0
 
