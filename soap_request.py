@@ -20,21 +20,24 @@ DEFAULT_REQUEST_FILE = REQUESTS_PATH + "Request_template.xml" # Path to the temp
 NEW_REQUEST_FILE_FORMAT = "{}-{}.xml"
 STOP_FIELD_STRING = "siri:MonitoringRef"
 LINE_FIELD_STRING = "siri:LineRef"
+REQUEST_TIMESTAMP_STRING = "siri:RequestTimestamp"
 
 
 def _UpdateField(dom: XMLDoc, field: str, value: str) -> bool:
 	"""
 	Get an xml handler object and update a specific field with a given value
+	Note: If there are multiple fields with the same name, the same value is updated.
 
 	dom(XMLDoc): Pay attention this is passed by refrence
 	"""
 	try:
-		request = dom.documentElement.getElementsByTagName(field)[0]
-		request_node = request.childNodes[0]
+		requests = dom.documentElement.getElementsByTagName(field)
+		for request in requests:
+			request_node = request.childNodes[0]
 
-		if request_node.nodeType == request_node.TEXT_NODE:
-			# We reached the actual value to change
-			request_node.replaceWholeText(value)
+			if request_node.nodeType == request_node.TEXT_NODE:
+				# We reached the actual value to change
+				request_node.replaceWholeText(value)
 
 	except Exception as error_msg:
 		print("Failed updating xml\nError: {error_msg}".format(error_msg=error_msg))
@@ -61,6 +64,11 @@ def _CreateNewRequest(dom, stop_code, line_code):
 	"""
 
 	new_request_file = "{}{}-{}.xml".format(REQUESTS_PATH, str(line_code), str(stop_code))
+
+	current_datetime = _GetCurrentTimeFormat()
+	if not _UpdateField(dom, REQUEST_TIMESTAMP_STRING, current_datetime):
+		print("Failed updating field [{field}] with value: [{value}]\nError: {error_msg}".format(field=REQUEST_TIMESTAMP_STRING, value=current_datetime))
+		return None
 	if not _UpdateField(dom, STOP_FIELD_STRING, stop_code):
 		print("Failed updating field [{field}] with value: [{value}]\nError: {error_msg}".format(field=STOP_FIELD_STRING, value=stop_code))
 		return None
