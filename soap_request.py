@@ -4,6 +4,7 @@ import requests
 import sys
 
 from xml.dom.minidom import parse
+from xml.dom.minidom import parseString
 from xml.dom.minidom import Document as XMLDoc
 import xml.dom.minidom
 
@@ -94,16 +95,19 @@ def ParseOutput(source_file, format=None):
 def SendRequest(stop_code, line_code):
 	output_file = "{}{}-{}.xml".format(DEFAULT_REPLY_DEST, str(line_code), str(stop_code))
 	
-	DOMTree = parse(DEFAULT_REQUEST_FILE)
-	new_request = _CreateNewRequest(DOMTree, stop_code, line_code)
+	parsed_xml = parse(DEFAULT_REQUEST_FILE)
+	new_request = _CreateNewRequest(parsed_xml, stop_code, line_code)
 	
 	headers = {'content-type': 'text/xml'}
 	with open(new_request) as request:
 		body = request.read()
 
 	response = requests.post(SIRI_URL,data=body,headers=headers)
+
+	# Parse the response xml to print pretty xml to file
+	parsed_xml = parseString(response.content)
 	with open(output_file, "w") as file:
-	    file.write(str(response.content))
+		file.write(parsed_xml.toprettyxml())
 
 def main(argv, argc):
 	if (argc < MAX_ARGS_NUM):
